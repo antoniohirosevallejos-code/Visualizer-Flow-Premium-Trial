@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111318">
+  <meta name="description" content="Visualizer Flow — convierte tu música en un visualizador listo para publicar en menos de un minuto.">
+  <title>Visualizer Flow — Music into motion</title>
+  <link rel="stylesheet" href="style.css?v=final2">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="brand" aria-label="Visualizer Flow">
+        <div class="brand-title"><span>VISUALIZER</span> <b>FLOW</b></div>
+        <div class="brand-tagline">MUSIC INTO MOTION</div>
+      </div>
+      <div class="account-actions">
+        <button id="buyButton" class="header-action header-buy" type="button">COMPRAR</button>
+        <button id="loginButton" class="header-action" type="button">INICIAR SESIÓN</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="section-label">AUDIO</div>
+      <label class="upload-card" for="audioInput">
+        <div class="upload-icon">↑</div>
+        <div class="upload-content">
+          <strong>SUBIR MP3 / WAV</strong>
+          <span id="fileLabel">Arrastra tu canción o selecciónala · máx. recomendado 200 MB</span>
+        </div>
+        <input id="audioInput" type="file" accept="audio/mpeg,audio/wav,audio/x-wav,audio/*" hidden>
+      </label>
+    </section>
+
+    <section class="card info-card">
+      <div class="field">
+        <label class="section-label" for="artist">ARTISTA</label>
+        <input id="artist" type="text" value="NOVA" placeholder="Nombre del artista" autocomplete="off" maxlength="80">
+      </div>
+      <div class="field">
+        <label class="section-label" for="title">TÍTULO DE LA CANCIÓN</label>
+        <input id="title" type="text" value="MIDNIGHT" placeholder="Título de la canción" autocomplete="off" maxlength="100">
+      </div>
+      <div class="field">
+        <label class="section-label" for="subtitle">TEXTO SECUNDARIO <span class="optional">OPCIONAL</span></label>
+        <input id="subtitle" type="text" value="NEW RELEASE" placeholder="Ej. New Release" autocomplete="off" maxlength="100">
+      </div>
+    </section>
+
+    <section class="preview-section">
+      <div class="preview-heading">
+        <span class="preview-heading-text">PREVISUALIZACIÓN</span>
+      </div>
+
+      <div class="preview-card">
+        <div class="preview-wrap">
+          <canvas id="canvas" width="1080" height="1920"></canvas>
+          <div id="emptyState" class="empty-state" aria-hidden="true"></div>
+        </div>
+
+        <div class="preview-controls">
+          <button id="playPreview" type="button" aria-label="Reproducir preview" disabled>▶</button>
+          <span id="previewTime" class="preview-time">0:00 / 0:00</span>
+          <div class="preview-progress-track" aria-hidden="true"><div id="previewProgress" class="preview-progress"></div></div>
+          <button id="mutePreview" type="button" aria-label="Activar o silenciar audio" disabled>◉</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="trimCard" class="card trim-card">
+      <div class="section-label">RECORTE DE AUDIO</div>
+      <div class="trim-head">
+        <span>Inicio <strong id="trimStartLabel">0:00</strong></span>
+        <span>Final <strong id="trimEndLabel">0:00</strong></span>
+      </div>
+      <div class="trim-slider-wrap">
+        <div class="trim-track"><div id="trimRangeFill" class="trim-range-fill"></div></div>
+        <input id="trimStart" class="trim-slider" type="range" min="0" max="0" step="0.1" value="0" aria-label="Inicio del recorte" disabled>
+        <input id="trimEnd" class="trim-slider" type="range" min="0" max="0" step="0.1" value="0" aria-label="Final del recorte" disabled>
+      </div>
+      <div class="trim-duration" id="trimDurationLabel">Selecciona el tramo que quieres usar.</div>
+    </section>
+
+    <section class="card style-card">
+      <div class="style-main-row">
+        <div>
+          <div class="section-label">ESTILO</div>
+          <div id="styleSummary" class="style-summary">Generando estilo…</div>
+          <div class="style-note">Cada vez que entras o eliges otro estilo, se crea una combinación nueva.</div>
+        </div>
+        <button id="randomStyleButton" class="secondary-button" type="button">OTRO ESTILO</button>
+      </div>
+    </section>
+
+    <section class="card advanced-card">
+      <button id="advancedToggle" class="advanced-toggle" type="button" aria-expanded="false" aria-controls="advancedPanel">
+        <span><strong>OPCIONES AVANZADAS</strong><small>Personaliza el estilo si quieres</small></span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+
+      <div id="advancedPanel" class="advanced-panel" hidden>
+        <div class="advanced-grid">
+          <div id="intensityField" class="field advanced-only">
+            <label class="section-label" for="intensitySelect">INTENSIDAD</label>
+            <select id="intensitySelect">
+              <option value="balanced">Equilibrada</option>
+              <option value="bold">Intensa</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="section-label" for="animationSelect">ANIMACIÓN</label>
+            <select id="animationSelect">
+              <option value="spectrum">Espectro</option>
+              <option value="wave">Ondas</option>
+              <option value="particles">Partículas</option>
+              <option value="planets">Planetas</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="section-label" for="paletteSelect">PALETA</label>
+            <select id="paletteSelect">
+              <option value="ocean">Ocean</option>
+              <option value="sunset">Sunset</option>
+              <option value="ultraviolet">Ultraviolet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="section-label" for="backgroundSelect">FONDO</label>
+            <select id="backgroundSelect">
+              <option value="aurora">Aurora</option>
+<option value="waves">Ondulado</option>
+              <option value="prisms">Prismas</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="section-label" for="fontSelect">TIPOGRAFÍA</label>
+            <select id="fontSelect">
+              <option value="modern">Modern</option>
+              <option value="editorial">Editorial</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="section-label" for="positionSelect">POSICIÓN DEL TEXTO</label>
+            <select id="positionSelect">
+              <option value="top">Arriba</option>
+              <option value="center">Centro</option>
+              <option value="bottom">Abajo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="advanced-hint">Puedes cambiar una opción sin perder las demás. “Otro estilo” vuelve a crear toda la combinación.</div>
+      </div>
+    </section>
+
+    <section class="card output-card">
+      <div class="output-grid">
+        <div class="field">
+          <label class="section-label" for="formatSelect">FORMATO</label>
+          <select id="formatSelect">
+            <option value="vertical">9:16 · 1080×1920</option>
+            <option value="portrait">4:5 · 1080×1350</option>
+            <option value="square">1:1 · 1080×1080</option>
+            <option value="landscape" selected>16:9 · 1920×1080</option>
+          </select>
+        </div>
+        <div class="format-note"><strong>WEBM</strong><span>Video + audio</span></div>
+      </div>
+    </section>
+
+    <section class="card export-card">
+      <button id="exportButton" type="button" disabled>🔒 EXPORTAR VIDEO</button>
+      <div id="unlockHint" class="unlock-hint">Prueba el visualizador gratis. La exportación se desbloquea después de comprar o iniciar sesión.</div>
+      <div class="export-progress-container" aria-live="polite">
+        <div class="export-progress-track"><div id="exportFill" class="export-progress" style="width:0%"></div></div>
+      </div>
+      <div id="status" class="status">Sube una canción para comenzar.</div>
+    </section>
+
+    <footer class="footer">Visualizer Flow · Music into motion</footer>
+  </main>
+
+  <div id="payModal" class="modal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="payModalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Cerrar">×</button>
+      <div class="modal-kicker">VISUALIZER FLOW</div>
+      <h2 id="payModalTitle">¿Te gusta cómo queda?</h2>
+      <p>Ya puedes probar el visualizador con tu propia canción. Compra el producto para desbloquear la exportación del video.</p>
+      <button id="modalBuyButton" class="modal-primary" type="button">COMPRAR Y DESBLOQUEAR</button>
+      <button id="modalLoginButton" class="modal-secondary" type="button">YA COMPRÉ · INICIAR SESIÓN</button>
+    </div>
+  </div>
+
+  <div id="loginModal" class="modal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Cerrar">×</button>
+      <div class="modal-kicker">ACCESO</div>
+      <h2 id="loginModalTitle">Desbloquear exportación</h2>
+      <p>Introduce la contraseña que recibiste después de comprar Visualizer Flow.</p>
+      <input id="passwordInput" class="modal-input" type="password" autocomplete="current-password" placeholder="Contraseña">
+      <div id="loginError" class="login-error" aria-live="polite"></div>
+      <button id="loginSubmit" class="modal-primary" type="button">ENTRAR</button>
+      <button id="loginBuyButton" class="modal-secondary" type="button">TODAVÍA NO COMPRÉ</button>
+    </div>
+  </div>
+  <script src="app.js?v=final2"></script>
+</body>
+</html>
